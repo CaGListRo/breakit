@@ -15,10 +15,10 @@ class Brick:
         pass
 
     def create_bricks(self):
-        for i in range(9):
+        for i in range(10):
             for j in range(5):
-                self.brick_list.append([i * 155 + 1, j * 45, self.level_pattern[j][i]])
-                self.brick_rects.append(pg.Rect(i * 155 + 1, j * 45, 155, 42))
+                self.brick_list.append([i * 140, j * 48, self.level_pattern[j][i]])
+                self.brick_rects.append(pg.Rect(i * 140, j * 48, 140, 48))
 
     def load_pattern(self):
         pattern_name = 'level' + str(self.level) + '_pattern'

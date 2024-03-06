@@ -17,16 +17,15 @@ class Game:
         self.main_window = pg.display.set_mode((sets.MAIN_WINDOW_WIDTH, sets.MAIN_WINDOW_HEIGHT))
         self.game_window = pg.Surface((sets.GAME_WINDOW_WIDTH, sets.GAME_WINDOW_HEIGHT))
         self.running = True
-        self.level = 2
+        self.level = 1
         self.movement = [False, False]
         self.paddle = Paddle(self)
         
-
         self.game_assets = {
-            'ball': load_image(path='ball', img_name='ball.png', width=32),
-            'bricks': load_images(path='bricks', width=(sets.GAME_WINDOW_WIDTH // 9), height=42),
-            'paddle': load_images(path='paddle',width=250),
-            'pwr_ups': load_images(path='power ups',width=32)
+            'ball': load_image(path='ball', img_name='ball.png'),
+            'bricks': load_images(path='bricks'),
+            'paddle': load_images(path='paddle'),
+            'pwr_ups': load_images(path='power ups')
         }
     
     def create_brick_pattern(self):
@@ -59,10 +58,12 @@ class Game:
 
     def run(self):
         self.create_brick_pattern()
+        print(self.game_assets)
         while self.running:
             self.draw_window()
 
             self.event_handler()
+            self.paddle.update(self.movement, paddle_size=200)
             
 
 
