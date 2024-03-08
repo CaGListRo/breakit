@@ -12,6 +12,7 @@ class Paddle:
 
     def update(self, movement=(0, 0), paddle_size=200):
         self.pos[0] += (movement[1] - movement[0]) * 10
+        self.rect.topleft = self.pos
         if self.pos[0] < 0:
             self.pos[0] = 0
         if self.pos[0] + paddle_size > sets.GAME_WINDOW_WIDTH:

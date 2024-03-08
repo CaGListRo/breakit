@@ -32,7 +32,6 @@ class Game:
         self.movement = [False, False]
         self.paddle = Paddle(self, self.game_assets['paddle'][1])
         self.ball = Ball(self.game_assets['ball'], self.paddle)
-        self.sticky = True
     
     def create_brick_pattern(self):
         self.brick_pattern = Brick(self, self.level)
@@ -52,7 +51,7 @@ class Game:
                     if event.key == pg.K_RIGHT:
                         self.movement[1] = False
                     if event.key == pg.K_LCTRL:
-                        self.sticky = False
+                        self.ball.active = True
 
     def draw_window(self):
         self.main_window.fill((100, 100, 100))
@@ -73,6 +72,7 @@ class Game:
             self.draw_window()
 
             self.event_handler()
+            self.ball.update()
             self.paddle.update(self.movement, paddle_size=200)
             
 
