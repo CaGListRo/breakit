@@ -31,7 +31,8 @@ class Game:
         self.level = 1
         self.movement = [False, False]
         self.paddle = Paddle(self, self.game_assets['paddle'][1])
-        self.ball = Ball(self.game_assets['ball'], self.paddle)
+        self.create_brick_pattern()
+        self.ball = Ball(self.game_assets['ball'], self.paddle, self.brick_pattern)
     
     def create_brick_pattern(self):
         self.brick_pattern = Brick(self, self.level)
@@ -66,7 +67,6 @@ class Game:
 
 
     def run(self):
-        self.create_brick_pattern()
         while self.running:
             self.clock.tick(self.FPS)
             self.draw_window()
