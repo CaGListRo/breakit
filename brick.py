@@ -27,5 +27,5 @@ class Brick:
 
     def render(self, surf):
         for brick in self.brick_list:
-            if brick[2] != 0:
+            if brick[2] > 0:
                 surf.blit(self.game.game_assets['bricks'][brick[2] - 1], (brick[0], brick[1]))

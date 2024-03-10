@@ -8,6 +8,8 @@ from paddle import Paddle
 from utilities import load_image, load_images
 import settings as sets
 
+from random import randint
+
 
 
 class Game:
@@ -21,7 +23,7 @@ class Game:
         self.FPS = 60
         
         self.game_assets = {
-            'background':load_image(path='backgrounds', img_name='ice.png'),
+            'background':load_images(path='backgrounds'),
             'ball': load_image(path='ball', img_name='ball.png'),
             'bricks': load_images(path='bricks'),
             'paddle': load_images(path='paddle'),
@@ -33,6 +35,7 @@ class Game:
         self.paddle = Paddle(self, self.game_assets['paddle'][1])
         self.create_brick_pattern()
         self.ball = Ball(self.game_assets['ball'], self.paddle, self.brick_pattern)
+        self.background_number = randint(0, 5)
     
     def create_brick_pattern(self):
         self.brick_pattern = Brick(self, self.level)
@@ -56,7 +59,7 @@ class Game:
 
     def draw_window(self):
         self.main_window.fill((100, 100, 100))
-        self.game_window.blit(self.game_assets['background'], (0, 0))
+        self.game_window.blit(self.game_assets['background'][self.background_number], (0, 0))
 
         self.brick_pattern.render(self.game_window)
         self.ball.render(self.game_window)

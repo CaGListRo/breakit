@@ -15,7 +15,7 @@ class Ball():
         self.direction = pg.math.Vector2((choice((-1, 1)), -1))
         print(self.pos)
 
-        self.speed = 10
+        self.speed = 5
         self.active = False
 
     def handle_vertical_brick_collision(self):
@@ -24,11 +24,11 @@ class Ball():
                 print(self.rect.top, brick.bottom, self.old_rect.top)
                 if self.rect.top <= brick.bottom and self.old_rect.top > brick.bottom:
                     print('true')
-                    # y = self.bricks.brick_list[i][1] + 48
-                    # self.pos = (self.pos[0], y)
                     self.rect.topleft = self.pos
                     self.direction.y *= -1
                     self.bricks.brick_list[i][2] -= 1
+                    if self.bricks.brick_list[i][2] == 0: # remove the brick from the game when hit
+                        del self.bricks.brick_list[i]
 
     def handle_horizontal_brick_collision(self):
         pass
@@ -61,10 +61,10 @@ class Ball():
             self.old_rect = self.rect.copy()
             print(f"nach {self.rect, self.old_rect}")
             self.pos.x += self.direction.x * self.speed
-            self.handle_vertical_brick_collision()
-            self.pos.y += self.direction.y * self.speed
-            self.handle_horizontal_brick_collision()
+            self.pos.y += self.direction.y * self.speed  
             self.rect.topleft = self.pos
+            self.handle_vertical_brick_collision()
+            self.handle_horizontal_brick_collision()
             self.handle_wall_collisions()
             self.handle_paddle_collision()
             print(f"ganz nach {self.rect, self.old_rect}")
