@@ -21,17 +21,62 @@ class Ball():
     def handle_vertical_brick_collision(self):
         for i, brick in enumerate(self.bricks.brick_rects):
             if self.rect.colliderect(brick):
-                print(self.rect.top, brick.bottom, self.old_rect.top)
-                if self.rect.top <= brick.bottom and self.old_rect.top > brick.bottom:
-                    print('true')
-                    self.rect.topleft = self.pos
-                    self.direction.y *= -1
-                    self.bricks.brick_list[i][2] -= 1
-                    if self.bricks.brick_list[i][2] == 0: # remove the brick from the game when hit
-                        del self.bricks.brick_list[i]
+                if self.direction.y > 0 and self.old_rect.top > brick.bottom:  # Ball bewegt sich nach unten
+                    self.rect.bottom = brick.top - 1
+                elif self.direction.y < 0 and self.old_rect.bottom < brick.top:  # Ball bewegt sich nach oben
+                    self.rect.top = brick.bottom + 1
+                self.direction.y *= -1
+                self.bricks.brick_list[i][2] -= 1
+
+                if self.bricks.brick_list[i][2] == 0:
+                    del self.bricks.brick_list[i]
+                    del self.bricks.brick_rects[i]
+        # for i, brick in enumerate(self.bricks.brick_rects):
+        #     if self.rect.colliderect(brick):
+        #         if self.rect.top <= brick.bottom and self.old_rect.top > brick.bottom:
+        #             brick.bottom = self.rect.top
+        #             self.rect.topleft = self.pos
+        #             self.direction.y *= -1
+        #             self.bricks.brick_list[i][2] -= 1
+        #         if self.rect.bottom >= brick.top and self.old_rect.bottom < brick.top:
+        #             brick.top = self.rect.bottom
+        #             self.rect.topleft = self.pos
+        #             self.direction.y *= -1
+        #             self.bricks.brick_list[i][2] -= 1
+
+        #         if self.bricks.brick_list[i][2] == 0:
+        #             del self.bricks.brick_list[i]
+        #             del self.bricks.brick_rects[i]
 
     def handle_horizontal_brick_collision(self):
-        pass
+        for i, brick in enumerate(self.bricks.brick_rects):
+            if self.rect.colliderect(brick):
+                if self.direction.x > 0 and self.old_rect.left > brick.right:  # Ball bewegt sich nach rechts
+                    self.rect.right = brick.left - 1
+                elif self.direction.x < 0 and self.old_rect.right < brick.left:  # Ball bewegt sich nach links
+                    self.rect.left = brick.right + 1
+                self.direction.x *= -1
+                self.bricks.brick_list[i][2] -= 1
+
+                if self.bricks.brick_list[i][2] == 0:
+                    del self.bricks.brick_list[i]
+                    del self.bricks.brick_rects[i]
+        # for i, brick in enumerate(self.bricks.brick_rects):
+        #     if self.rect.colliderect(brick):
+        #         if self.rect.left <= brick.right and self.old_rect.left > brick.right:
+        #             brick.right = self.rect.left
+        #             self.rect.topleft = self.pos
+        #             self.direction.x *= -1
+        #             self.bricks.brick_list[i][2] -= 1
+        #         if self.rect.right >= brick.left and self.old_rect.right < brick.left:
+        #             brick.left = self.rect.right
+        #             self.rect.topleft = self.pos
+        #             self.direction.x *= -1
+        #             self.bricks.brick_list[i][2] -= 1
+
+        #         if self.bricks.brick_list[i][2] == 0:
+        #             del self.bricks.brick_list[i]
+        #             del self.bricks.brick_rects[i]
 
     def handle_paddle_collision(self):
         if self.rect.colliderect(self.paddle.rect):
@@ -57,9 +102,7 @@ class Ball():
     def update(self):
         
         if self.active:
-            print(f"vor {self.rect, self.old_rect}")
             self.old_rect = self.rect.copy()
-            print(f"nach {self.rect, self.old_rect}")
             self.pos.x += self.direction.x * self.speed
             self.pos.y += self.direction.y * self.speed  
             self.rect.topleft = self.pos
@@ -67,7 +110,6 @@ class Ball():
             self.handle_horizontal_brick_collision()
             self.handle_wall_collisions()
             self.handle_paddle_collision()
-            print(f"ganz nach {self.rect, self.old_rect}")
         else:
             self.rect.midbottom = self.paddle.rect.midtop
             self.pos = pg.math.Vector2(self.rect.topleft)

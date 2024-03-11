@@ -29,3 +29,5 @@ class Brick:
         for brick in self.brick_list:
             if brick[2] > 0:
                 surf.blit(self.game.game_assets['bricks'][brick[2] - 1], (brick[0], brick[1]))
+        for rectangle in self.brick_rects:
+            pg.draw.rect(surf, (255, 0,  0), rectangle, 3)
