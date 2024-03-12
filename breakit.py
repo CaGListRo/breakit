@@ -24,6 +24,7 @@ class Game:
         
         self.game_assets = {
             'background':load_images(path='backgrounds'),
+            'main_background': load_image(path='main background', img_name='space.png'),
             'ball': load_image(path='ball', img_name='ball.png'),
             'bricks': load_images(path='bricks'),
             'paddle': load_images(path='paddle'),
@@ -34,8 +35,9 @@ class Game:
         self.movement = [False, False]
         self.paddle = Paddle(self, self.game_assets['paddle'][1])
         self.create_brick_pattern()
-        self.ball = Ball(self.game_assets['ball'], self.paddle, self.brick_pattern)
-        self.background_number = randint(0, 5)
+        self.ball = Ball(self, self.game_assets['ball'], self.paddle, self.brick_pattern)
+        self.background_number = randint(0, 7)
+        self.power_ups = []
     
     def create_brick_pattern(self):
         self.brick_pattern = Brick(self, self.level)
@@ -58,9 +60,14 @@ class Game:
                         self.ball.active = True
 
     def draw_window(self):
-        self.main_window.fill((100, 100, 100))
+        self.main_window.blit(pg.transform.scale(self.game_assets['main_background'], (sets.MAIN_WINDOW_WIDTH, sets.MAIN_WINDOW_HEIGHT)), (0, 0))
+        pg.draw.rect(self.main_window, (242, 242, 242), (95, 95, 1410, 710))
+        
         self.game_window.blit(self.game_assets['background'][self.background_number], (0, 0))
 
+        for pwr_up in self.power_ups:
+            pwr_up.update()
+            pwr_up.render(self.game_window)
         self.brick_pattern.render(self.game_window)
         self.ball.render(self.game_window)
         self.paddle.render(self.game_window)
