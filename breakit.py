@@ -32,15 +32,24 @@ class Game:
         }
 
         self.level = 1
+        self.lives = 3
         self.movement = [False, False]
         self.paddle = Paddle(self, self.game_assets['paddle'][1])
         self.create_brick_pattern()
         self.ball = Ball(self, self.game_assets['ball'], self.paddle, self.brick_pattern)
         self.background_number = randint(0, 7)
         self.power_ups = []
+        self.power_up_rects = []
     
     def create_brick_pattern(self):
         self.brick_pattern = Brick(self, self.level)
+
+    def handle_power_ups(self):
+        for i, pwr_up in enumerate(self.power_ups):
+            pwr_up.update()
+            if pwr_up.rect.top > sets.GAME_WINDOW_HEIGHT:
+                self.power_ups.pop(i)
+                self.power_up_rects.pop(i)
 
     def event_handler(self):
         for event in pg.event.get():
@@ -62,12 +71,15 @@ class Game:
     def draw_window(self):
         self.main_window.blit(pg.transform.scale(self.game_assets['main_background'], (sets.MAIN_WINDOW_WIDTH, sets.MAIN_WINDOW_HEIGHT)), (0, 0))
         pg.draw.rect(self.main_window, (242, 242, 242), (95, 95, 1410, 710))
+
+        for i in range(self.lives):
+            self.main_window.blit(self.game_assets['paddle'][1], (100 + i * 300, 45))
         
         self.game_window.blit(self.game_assets['background'][self.background_number], (0, 0))
 
         for pwr_up in self.power_ups:
-            pwr_up.update()
             pwr_up.render(self.game_window)
+        
         self.brick_pattern.render(self.game_window)
         self.ball.render(self.game_window)
         self.paddle.render(self.game_window)
@@ -79,13 +91,14 @@ class Game:
     def run(self):
         while self.running:
             self.clock.tick(self.FPS)
-            self.draw_window()
-
+            
+            self.handle_power_ups()
             self.event_handler()
             self.ball.update()
             self.paddle.update(self.movement, paddle_size=200)
+            self.paddle.check_pwr_up_collision()
             
-
+            self.draw_window()
 
 if __name__ == '__main__':
     Game().run()
