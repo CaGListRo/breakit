@@ -22,7 +22,8 @@ class Ball():
     def handle_death(self):
         if self.rect.top > sets.GAME_WINDOW_HEIGHT:
             self.active = False
-            self.game.lives -= 1
+            self.direction = pg.math.Vector2((1, -1))
+            self.game.extra_lives -= 1
 
     def handle_vertical_brick_collision(self):
         for i, brick in enumerate(self.bricks.brick_rects):
@@ -34,13 +35,15 @@ class Ball():
                 self.pos = pg.math.Vector2(self.rect.topleft)
                 self.direction.y *= -1
                 self.bricks.brick_list[i][2] -= 1
+                self.game.score += 5
 
                 if self.bricks.brick_list[i][2] == 0:
-                    if randint(1, 100) > 50:
+                    if randint(1, 100) > 80:
                         pwr_up_number = randint(0, 6)
                         self.game.power_ups.append(PowerUp(self.game, (self.bricks.brick_list[i][0] + 30, self.bricks.brick_list[i][1]), pwr_up_number))
                     del self.bricks.brick_list[i]
                     del self.bricks.brick_rects[i]
+                    self.game.score += 10
 
     def handle_horizontal_brick_collision(self):
         for i, brick in enumerate(self.bricks.brick_rects):
@@ -52,6 +55,7 @@ class Ball():
                 self.pos = pg.math.Vector2(self.rect.topleft)
                 self.direction.x *= -1
                 self.bricks.brick_list[i][2] -= 1
+                self.game.score += 5
 
                 if self.bricks.brick_list[i][2] == 0:
                     if randint(1, 100) > 80:
@@ -59,13 +63,14 @@ class Ball():
                         self.game.power_ups.append(PowerUp(self.game, (self.bricks.brick_list[i][0] + 30, self.bricks.brick_list[i][1]), pwr_up_number))
                     del self.bricks.brick_list[i]
                     del self.bricks.brick_rects[i]
+                    self.game.score += 10
 
     def handle_paddle_collision(self):
         if self.rect.colliderect(self.paddle.rect):
+            self.direction.y *= -1  
             self.paddle.top = self.rect.bottom
             self.pos = pg.math.Vector2(self.rect.topleft)
-            self.direction.y *= -1            
-
+                      
     def handle_wall_collisions(self):
         if self.rect.left < 0:
             self.rect.left = 0

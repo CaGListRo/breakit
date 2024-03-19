@@ -10,7 +10,7 @@ class PowerUp:
     def __init__(self, game, pos, img_number):
         self.game = game
         self.pos = list(pos)
-        self.image = game.game_assets['pwr_ups'][img_number]
+        self.image = pg.transform.scale(game.game_assets['pwr_ups'][img_number], (50, 50))
         self.rect = self.image.get_rect(midtop=self.pos)
         self.game.power_up_rects.append([self.rect, img_number])
 

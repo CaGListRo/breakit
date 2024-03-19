@@ -1,6 +1,5 @@
 # this is a breakout clone
 import pygame as pg
-from timeit import default_timer as timer
 
 from ball import Ball
 from brick import Brick
@@ -21,6 +20,8 @@ class Game:
         self.running = True
         self.clock = pg.time.Clock()
         self.FPS = 60
+        self.SCORE_FONT = pg.font.SysFont("comicsans", 42)
+        self.GAME_OVER_FONT = pg.font.SysFont("comicsans", 142)
         
         self.game_assets = {
             'background':load_images(path='backgrounds'),
@@ -31,8 +32,9 @@ class Game:
             'pwr_ups': load_images(path='power ups')
         }
 
+        self.score = 0
         self.level = 1
-        self.lives = 3
+        self.extra_lives = 2
         self.movement = [False, False]
         self.paddle = Paddle(self, self.game_assets['paddle'][1])
         self.create_brick_pattern()
@@ -41,6 +43,15 @@ class Game:
         self.power_ups = []
         self.power_up_rects = []
     
+    def level_complete(self):
+        self.ball.active = False
+        self.level += 1
+        self.create_brick_pattern()
+
+    def game_over(self):
+        self.ball.active = False
+        self.running = False
+
     def create_brick_pattern(self):
         self.brick_pattern = Brick(self, self.level)
 
@@ -72,7 +83,10 @@ class Game:
         self.main_window.blit(pg.transform.scale(self.game_assets['main_background'], (sets.MAIN_WINDOW_WIDTH, sets.MAIN_WINDOW_HEIGHT)), (0, 0))
         pg.draw.rect(self.main_window, (242, 242, 242), (95, 95, 1410, 710))
 
-        for i in range(self.lives):
+        score_to_blit = self.SCORE_FONT.render(str(self.score), True, "white")
+        self.main_window.blit(score_to_blit, (sets.MAIN_WINDOW_WIDTH // 2 - score_to_blit.get_width() // 2, 800))
+
+        for i in range(self.extra_lives):
             self.main_window.blit(self.game_assets['paddle'][1], (100 + i * 300, 45))
         
         self.game_window.blit(self.game_assets['background'][self.background_number], (0, 0))
@@ -87,7 +101,6 @@ class Game:
         self.main_window.blit(self.game_window, (100, 100))
         pg.display.update()
 
-
     def run(self):
         while self.running:
             self.clock.tick(self.FPS)
@@ -97,6 +110,10 @@ class Game:
             self.ball.update()
             self.paddle.update(self.movement, paddle_size=200)
             self.paddle.check_pwr_up_collision()
+            if self.extra_lives < 0:
+                self.game_over()
+            if len(self.brick_pattern.brick_list) < 1:
+                self.level_complete()
             
             self.draw_window()
 

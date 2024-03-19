@@ -11,14 +11,13 @@ class Brick:
         self.brick_rects = []
         self.load_pattern()
 
-    def check_collision(self):
-        pass
-
     def create_bricks(self):
         for i in range(10):
             for j in range(5):
-                self.brick_list.append([i * 140, j * 48, self.level_pattern[j][i]])
-                self.brick_rects.append(pg.Rect(i * 140, j * 48, 140, 48))
+                if self.level_pattern[j][i] > 0:
+                    self.brick_list.append([i * 140, j * 48, self.level_pattern[j][i]])
+                    self.brick_rects.append(pg.Rect(i * 140, j * 48, 140, 48))
+        print(f"bl: {self.brick_list}     br: {self.brick_rects}")
 
     def load_pattern(self):
         pattern_name = 'level' + str(self.level) + '_pattern'
